@@ -42,10 +42,15 @@ identified are necessarily the best available for the purpose.
  * access to registration metadata and exception handling.
  * 
  * For example:
+ * ```
  *   NFRL_ITL::Registrator *r2;
+ * 
  *   NFRL::Registrator::RegistrationMetadata rm2;
+ * 
  *   NFRL_ITL::printVersion();
+ * 
  *   catch( NFRL::Miscue &e ) {}
+ * ```
  */
 namespace NFRL_ITL {
 

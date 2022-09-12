@@ -237,7 +237,7 @@ user@:~$ mkdir -p libs/opencv-3.4.11/ libs/opencv-4.5.0/
 ```
 
 ### Ubuntu and Debian
-Again, the instructions below are meant only as a guide; your process may vary, however, these steps have been shown
+The instructions below are meant only as a guide; your process may vary, however, these steps have been shown
 to work for configurations specific to these environments.
 
 #### Update and Upgrade
@@ -479,7 +479,7 @@ MSBuild | $Env:PATH += ";C:\Program Files (x86)\Microsoft Visual Studio\2019\Com
 
 
 ### NFRL Wrapper
-In a Powershell terminal, again, navigate to the `NFRL/build` directory.  Run as follows:
+In a Powershell terminal, navigate to the `NFRL/build` directory.  Run as follows:
 
 ```
 PS .\build> cmake -S .. -DCMAKE_CONFIGURATION_TYPES="Release" -DUSE_OPENCV=1
@@ -508,7 +508,7 @@ In a terminal, navigate to the `NFRL/build` directory.  Run as follows:
 The library file is linked into `./NFRL/build/src/lib/libnfrl_core.a`.
 
 ### NFRL Wrapper
-In a terminal, again, navigate to the `NFRL/build` directory.  Run as follows:
+In a terminal, navigate to the `NFRL/build` directory.  Run as follows:
 
 ```
 ./build$ cmake -DUSE_OPENCV=1 ..

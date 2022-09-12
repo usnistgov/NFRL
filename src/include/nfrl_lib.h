@@ -335,16 +335,16 @@ public:
       std::map<std::string, Point> point;
       /**
        * Euclidean distances between tranformed points (post registration).
-       * The constrained pair is that used for translation.
-       * The unconstrained pair is that used for rotation.
+       * The unconstrained pair is that used for translation.
+       * The constrained pair is that used for rotation.
        */
       struct EuclideanDistance
       {
         /** Distance between constrained pair of points (across images, the two
-        points used for translation). */
+        points used for rotation). */
         double constrained{0.0};
         /** Distance between unconstrained pair of points (across images,
-         * the two points used for rotation). */
+         * the two points used for translation). */
         double unconstrained{0.0};
 
         /** Convert the constrained-points distance to string: always zero. */
