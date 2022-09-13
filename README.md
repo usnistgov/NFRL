@@ -1,6 +1,6 @@
-![nist-logo](../img/f_nist-logo-brand-2c_512wide.png)
+![nist-logo](doc/img/f_nist-logo-brand-2c_512wide.png)
 
-The **NFRL (NIST Fingerprint Registration Library)** builds and runs on Windows, Linux, and MacOS.
+The **NFRL (NIST Fingerprint-Image Registration Library)** builds and runs on Windows, Linux, and MacOS.
 
 **NFRL** is built into a software library.  This affords users to write their own using-application.  This library
 is used by **NFRaCT** (www.nist.gov, search `nfract`), a cross-platform GUI application that registers a pair
