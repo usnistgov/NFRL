@@ -32,8 +32,10 @@ identified are necessarily the best available for the purpose.
 namespace NFRL {
 
 /**
- * For each manual registration using two (2) pairs of corresponding control
- * points *across* images, each image *itself* "contains" two control points:
+ * @brief For each manual registration using two (2) pairs of corresponding
+ *  control.
+ *
+ * Points *across* images, each image *itself* "contains" two control points:
  * the "points on image" pair.
  *
  * There are two issues of interest:
@@ -51,45 +53,41 @@ namespace NFRL {
 class PointsOnImage
 {
 
-protected:
+public:
 
   void Init();
   void Copy( const PointsOnImage& );
 
-public:
   // Default constructor.
   PointsOnImage();
 
   // Copy constructor.
   PointsOnImage( const PointsOnImage& );
 
-  // Full constructor.
+  /** @brief Full constructor used by NFRL. */
   PointsOnImage( cv::Point2f, cv::Point2f );
-
-  // Virtual destructor.
   virtual ~PointsOnImage() {}
 
-  /** Angle of the sement from the horizontal where 0 degrees is the x-axis
-   *  of the Cartesian coordinate system, ie, the "ray" between the first
-   *  and fourth quadrants.
-   */
+  /** @brief Angle of the segment from the horizontal where 0 degrees is the
+   *   x-axis of the Cartesian coordinate system, i.e., the "ray" between the
+   *   first and fourth quadrants. */
   double angleDegrees;
-  /** Euclidean distance between the two points, ie, the "segment". */
+  /** @brief Euclidean distance between the two points, i.e., the "segment". */
   double segmentLength;
 
-  std::string to_s( std::string );
-  std::vector<cv::Point2f> getVectorOfPoints();
+  std::string to_s( const std::string& ) const;
+  std::vector<cv::Point2f> getVectorOfPoints() const;
 
 private:
-  /** Of the segment */
+  /** @brief Of the segment */
   cv::Point2f _pointOne;
-  /** Of the segment */
+  /** @brief Of the segment */
   cv::Point2f _pointTwo;
-  /** Slope of the segment (where segment = Euclidean hypotenuse) */
+  /** @brief Slope of the segment (where segment = Euclidean hypotenuse) */
   float _slope;
-  /** Of right-triangle */
+  /** @brief Of right-triangle */
   float _sideX;
-  /** Of right-triangle */
+  /** @brief Of right-triangle */
   float _sideY;
 
 };

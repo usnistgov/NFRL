@@ -34,89 +34,69 @@ identified are necessarily the best available for the purpose.
 namespace NFRL {
 
 /**
- * To determine the region to crop each source image, the registered images are
- * overlaid by "summing" their binary renderings.  This overlap region is the
- * rectangle (ROI) that is used to crop source images.  Therefore, final images
- * are same size (the size of the crop-region).
+ * @brief To determine the region to crop each source image, the registered
+ * images are overlaid by "summing" their binary renderings.
+ *
+ * This overlap region is the rectangle (ROI) that is used to crop source
+ * images.  Therefore, final images are same size (the size of the crop-region).
  */
 class OverlapRegisteredImages
 {
 private:
-  /** White pixel in grayscale image. */
+  /** @brief White pixel in grayscale image. */
   int const _max_BINARY_value = 255;
 
-  /** The minimum rectangle surrounding the *REGISTERED* moving image
-   *  overlapping the fixed image.
-   */
+  /** @brief The minimum rectangle surrounding the *REGISTERED* moving image
+   *   overlapping the fixed image. */
   cv::Rect _minRect;
-  /** Byte-stream of overlay region only. */
-  std::vector<uchar> _vecPngBlob;
+  /** @brief Byte-stream of overlay region only. */
+  std::vector<uint8_t> _vecPngBlob;
 
-  /** OpenCV support for dilation. */
+  /** @brief OpenCV support for image dilation. */
   struct DilationKernelParams {
-    /** [ MORPH_ELLIPSE | MORPH_CROSS | MORPH_RECT ]
-     * 
+    /** @brief [ MORPH_ELLIPSE | MORPH_CROSS | MORPH_RECT ]
+     *
      * This type is set programmatically in source code; must recompile
-     * to change.
-     */
+     * to change. */
     int type{ cv::MORPH_RECT };
-    /** Size of the kernel, initialized to invalid value forces error if not
-     *  updated.
-     * 
+    /** @brief Size of the kernel, initialized to invalid value forces error
+     *   if not updated.
+     *
      *  This size is set programmatically in source code; must recompile
-     *  to change.
-     */
+     *  to change. */
     int size{-1};
 
-    /** Returns current size and type for metadata generated-by and
+    /** @brief Returns current size and type for metadata generated-by and
      *  included-in the registration process. */
-    std::string to_s()
-    {
-      std::string s3{" * Sum binaries dilation parameters for kernel:\n"};
-      s3 += "    size: "
-        + std::to_string( size ) + "\n";
-
-      // From opencv2/imgproc.hpp, line 230:
-      std::string s4{"    type: "};
-      if( type == cv::MORPH_RECT ) {
-        s4 += std::to_string( type ) + " = cv::MORPH_RECT\n";
-      }
-      else if( type == cv::MORPH_CROSS ) {
-        s4 += std::to_string( type ) + " = cv::MORPH_CROSS\n";
-      }
-      else if( type == cv::MORPH_ELLIPSE ) {
-        s4 += std::to_string( type ) + " = cv::MORPH_ELLIPSE\n";
-      }
-
-      return s3 + s4;
-    }
+    std::string to_s() const;
   }
-  /** Container for size and type of the dilation kernel. */
+  /** @brief Container for size and type of the dilation kernel. */
   _dilationKernelParams;
 
-protected:
+public:
 
   void Init();
   void Copy( const OverlapRegisteredImages& );
 
-public:
   // Default constructor.
   OverlapRegisteredImages();
 
   // Copy constructor.
   OverlapRegisteredImages( const OverlapRegisteredImages& );
 
-  // Full constructor.
+  /** @brief Full constructor used by NFRL. */
   OverlapRegisteredImages( cv::Mat, cv::Mat );
-
-  // Virtual destructor.
   virtual ~OverlapRegisteredImages() {}
 
-  cv::Rect getRegionOfInterest();
-  std::vector<uchar> getPngBlob();
+  /** @brief Rectangle of overlap for cropping of source images. */
+  cv::Rect getRegionOfInterest() const;
+  /** @brief Image used to calculate the common, ROI crop coordinates. */
+  std::vector<uint8_t> getPngBlob() const;
 
-  std::vector<std::string> getRegionOfInterestCorners();
+  /** @brief Top-left and bottom-right. */
+  std::vector<std::string> getRegionOfInterestCorners() const;
 
+  // Debug metadata
   std::string getStructuringElementParams();
   std::string to_s();
 };

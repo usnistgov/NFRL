@@ -37,21 +37,23 @@ void OverlapRegisteredImages::Init() {
   _dilationKernelParams.type = -1;
 }
 
-/** Copy function to make clones of the object. */
+/** @brief Supports copy-constructor. */
 void OverlapRegisteredImages::Copy( const OverlapRegisteredImages& aCopy )
 {
   _dilationKernelParams.size = aCopy._dilationKernelParams.size;
   _dilationKernelParams.type = aCopy._dilationKernelParams.type;
 }
 
-/** Default constructor.  Calls Init(). */
+/** @brief Default constructor.  Calls Init(). */
 OverlapRegisteredImages::OverlapRegisteredImages()
 {
   Init();
 }
 
-/** Copy constructor.  This is called when passing the object by value as
- *  parameter to OverlapRegisteredImagess constructor.
+/** @brief Copy constructor.
+ *
+ * This is called when passing the object by value as parameter to
+ * OverlapRegisteredImages constructor.
  */
 OverlapRegisteredImages::OverlapRegisteredImages(
     const OverlapRegisteredImages& aCopy )
@@ -60,8 +62,9 @@ OverlapRegisteredImages::OverlapRegisteredImages(
 }
 
 /**
- * Base class constructor. Images are required to be already registered, ie,
- * moving image is translated and rotated to align with the fixed image.
+ * @brief Images are required to be already registered.
+ *
+ * Moving image is translated and rotated to align with the fixed image.
  * 
  *   1. Binarize each padded image using OTSU method
  *   2. Sum the binary images to determine the overlap
@@ -117,7 +120,7 @@ OverlapRegisteredImages::OverlapRegisteredImages( cv::Mat img1, cv::Mat img2 )
 /**
  * @return rectangle of overlap for cropping of source images
  */
-cv::Rect OverlapRegisteredImages::getRegionOfInterest()
+cv::Rect OverlapRegisteredImages::getRegionOfInterest() const
 {
   return _minRect;
 }
@@ -126,7 +129,7 @@ cv::Rect OverlapRegisteredImages::getRegionOfInterest()
  * @return rectangle top-left and bottom-right corners of overlap for cropping
  *         of source images
  */
-std::vector<std::string> OverlapRegisteredImages::getRegionOfInterestCorners()
+std::vector<std::string> OverlapRegisteredImages::getRegionOfInterestCorners() const
 {
   std::string s{""};
   std::vector<std::string> pts{};
@@ -140,10 +143,12 @@ std::vector<std::string> OverlapRegisteredImages::getRegionOfInterestCorners()
 
 
 /**
- * The structuring element (kernel) is used to dilate the image that is the
- * summed-overlap of the registered images.  Useful for test/debug purposes.
- * 
- * @return kernel type and size
+ * @brief The structuring element (kernel) that was used to dilate the
+ *  image that is the summed-overlap of the registered images.
+ *
+ * Useful for test/debug purposes.
+ *
+ * @return kernel type and size in print- format
  */
 std::string OverlapRegisteredImages::getStructuringElementParams()
 {
@@ -152,18 +157,21 @@ std::string OverlapRegisteredImages::getStructuringElementParams()
 
 
 /**
- * @return image used to calculate the common, ROI crop coordinates
+ * @brief Image used to calculate the common, ROI crop coordinates.
+ *
+ * @return vector of unsigned bytes
  */
-std::vector<uchar> OverlapRegisteredImages::getPngBlob()
+std::vector<uint8_t> OverlapRegisteredImages::getPngBlob() const
 {
   return _vecPngBlob;
 }
 
 
 /**
- * Format the corner points as 'x,y' (no parentheses).
+ * @brief Top-left, bottom-right corners of crop-region, width, height,
+ *  and area.
  * 
- * @return ROI (rectangle) top-left and bottom-right coordinates
+ * @return string in print format
  */
 std::string OverlapRegisteredImages::to_s()
 {
@@ -182,6 +190,30 @@ std::string OverlapRegisteredImages::to_s()
   std::string s4{_dilationKernelParams.to_s()};
 
   return s1 + s2 + s3 + s4;
+}
+
+/**
+ * @return current size and type for metadata generated-by and
+ *  included-in the registration process */
+std::string OverlapRegisteredImages::DilationKernelParams::to_s() const
+{
+  std::string s3{" * Sum binaries dilation parameters for kernel:\n"};
+  s3 += "    size: "
+    + std::to_string( size ) + "\n";
+
+  // From opencv2/imgproc.hpp, line 230:
+  std::string s4{"    type: "};
+  if( type == cv::MORPH_RECT ) {
+    s4 += std::to_string( type ) + " = cv::MORPH_RECT\n";
+  }
+  else if( type == cv::MORPH_CROSS ) {
+    s4 += std::to_string( type ) + " = cv::MORPH_CROSS\n";
+  }
+  else if( type == cv::MORPH_ELLIPSE ) {
+    s4 += std::to_string( type ) + " = cv::MORPH_ELLIPSE\n";
+  }
+
+  return s3 + s4;
 }
 
 }   // End namespace

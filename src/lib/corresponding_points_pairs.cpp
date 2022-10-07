@@ -32,27 +32,27 @@ identified are necessarily the best available for the purpose.
 
 namespace NFRL {
 
-/** Initialization function that resets all values. */
+/** @brief Initialization function that resets both pairs of points to (0,0). */
 void CorrespondingPointsPairs::Init()
 {
-  _pair1 = NFRL::CorrespondingPointsPair( cv::Point2f(0, 0), cv::Point2f(0, 0) );
-  _pair2 = NFRL::CorrespondingPointsPair( cv::Point2f(0, 0), cv::Point2f(0, 0) );
+  pair1 = NFRL::CorrespondingPointsPair( cv::Point2f(0, 0), cv::Point2f(0, 0) );
+  pair2 = NFRL::CorrespondingPointsPair( cv::Point2f(0, 0), cv::Point2f(0, 0) );
 }
 
-/** Copy function to make clones of an object. */
+/** @brief Supports copy-constructor. */
 void CorrespondingPointsPairs::Copy( const CorrespondingPointsPairs& aCopy )
 {
-  _pair1 = aCopy._pair1;
-  _pair2 = aCopy._pair2;
+  pair1 = aCopy.pair1;
+  pair2 = aCopy.pair2;
 }
 
-/** Default constructor.  Calls Init(). */
+/** @brief Default constructor.  Calls Init(). */
 CorrespondingPointsPairs::CorrespondingPointsPairs()
 {
   Init();
 }
 
-/** Copy constructor.  This is called when passing the object by value
+/** @brief Copy constructor.  This is called when passing the object by value
  * as parameter to CorrespondingPointsPairs constructor.
  * 
  * @param aCopy object to be copied
@@ -63,26 +63,24 @@ CorrespondingPointsPairs::CorrespondingPointsPairs(
   Copy( aCopy );
 }
 
-/** Base class constructor.
+/** @brief This pair of points are corresponding *across* images.
  *
- * @param pair1 as input into the registion process (method-call)
- * @param pair2 as input into the registion process (method-call)
+ * @param pair1 as input into the registration process (method-call)
+ * @param pair2 as input into the registration process (method-call)
  */
 CorrespondingPointsPairs::CorrespondingPointsPairs(
     NFRL::CorrespondingPointsPair pair1, NFRL::CorrespondingPointsPair pair2 )
-{
-  _pair1 = pair1;
-  _pair2 = pair2;
-}
+  : pair1(pair1), pair2(pair2) {}
 
-/**
+/** @brief `#1: (x1,y1) * (x2,y2)  #2: (x3,y3) * (x4,y4)`
+ *
  * @return string of points-pairs: `#1: (x1,y1) * (x2,y2)  #2: (x3,y3) * (x4,y4)`
  */
-std::string CorrespondingPointsPairs::to_s()
+std::string CorrespondingPointsPairs::to_s() const
 {
-  std::string out;
-  std::string s1 = _pair1.to_s();
-  std::string s2 = _pair2.to_s();
+  std::string out{};
+  std::string s1 = pair1.to_s();
+  std::string s2 = pair2.to_s();
 
   out = "  #1: " + s1 + "  #2: " + s2;
   return out;

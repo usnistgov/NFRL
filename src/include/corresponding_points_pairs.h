@@ -35,18 +35,16 @@ identified are necessarily the best available for the purpose.
 namespace NFRL {
 
 /**
- * Objects of this type contain two pairs of points *across* images.  This
- * is the pair of points that was passed as input to the registration process.
+ * @brief Objects of this type contain two pairs of points *across* images.
+ *
+ * This is the pair of points that was passed as input to the registration
+ * process.
  */
-class CorrespondingPointsPairs
+struct CorrespondingPointsPairs final
 {
-
-protected:
-
   void Init();
   void Copy( const CorrespondingPointsPairs& );
 
-public:
   // Default constructor.
   CorrespondingPointsPairs();
 
@@ -56,16 +54,14 @@ public:
   // Full constructor.
   CorrespondingPointsPairs( NFRL::CorrespondingPointsPair,
                             NFRL::CorrespondingPointsPair );
+  ~CorrespondingPointsPairs() {}
 
-  // Virtual destructor.
-  virtual ~CorrespondingPointsPairs() {}
+  /** @brief First and second points across images. */
+  NFRL::CorrespondingPointsPair pair1;
+  /** @brief Third and fourth points across images. */
+  NFRL::CorrespondingPointsPair pair2;
 
-  /** First and second points across images. */
-  NFRL::CorrespondingPointsPair _pair1;
-  /** Third and fourth points across images. */
-  NFRL::CorrespondingPointsPair _pair2;
-
-  std::string to_s();
+  std::string to_s() const;
 };
 
 }   // End namespace

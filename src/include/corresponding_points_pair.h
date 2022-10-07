@@ -32,19 +32,16 @@ identified are necessarily the best available for the purpose.
 namespace NFRL {
 
 /**
- * Objects of this type contain a pair of points *across* images.  In other
- * words, one point of the pair is in the Moving image and the other point
- * is in the Fixed image.
+ * @brief Objects of this type contain a pair of points *across* images.
+ *
+ * In other words, one point of the pair is in the Moving image and the other
+ * point is in the Fixed image.
  */
-class CorrespondingPointsPair
+struct CorrespondingPointsPair final
 {
-
-protected:
-
   void Init();
   void Copy( const CorrespondingPointsPair& );
 
-public:
   // Default constructor.
   CorrespondingPointsPair();
 
@@ -53,17 +50,15 @@ public:
 
   // Full constructor.
   CorrespondingPointsPair( cv::Point2f, cv::Point2f );
+  ~CorrespondingPointsPair() {}
 
-  // Virtual destructor.
-  virtual ~CorrespondingPointsPair() {}
+  /** @brief The point on the Moving image. */
+  cv::Point2f movingPt;
+  /** @brief The point on the Fixed image. */
+  cv::Point2f fixedPt;
 
-  /** The point on the Moving image. */
-  cv::Point2f _movingPt;
-  /** The point on the Fixed image. */
-  cv::Point2f _fixedPt;
-
-  double distance();
-  std::string to_s();
+  double distance() const;
+  std::string to_s() const;
 };
 
 }   // End namespace

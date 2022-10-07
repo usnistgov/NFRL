@@ -44,10 +44,10 @@ identified are necessarily the best available for the purpose.
   namespace NFRL_ITL {
 #endif
 
-/** Initialization function that resets all values.  Not yet implemented. */
+/** @brief Initialization function that resets all values, not yet implemented. */
 void Registrator::Init() {}
 
-/** Copy function to clone a Registrator object.  Not yet implemented. */
+/** Copy function to clone a Registrator object, not yet implemented. */
 void Registrator::Copy( const Registrator& ) {}
 
 /** Default constructor.  Not usable; supports compilation only. */
@@ -55,16 +55,43 @@ Registrator::Registrator() : _correspondingPoints(_correspondingPoints),
                              _metadata(_metadata) {}
 
 /**
+ * @brief This class implements the NIST Fingerprint Registration Library.
+ *
+ * Each image used in a registration process may be referred to using multiple
+ * terms: moving or source, and, target, fixed, or sensed.  For the purpose
+ * of this discussion, the Fixed image remains fixed in 2-dimensional space
+ * and the Moving image is “moved” to align, that is to register, with the
+ * Fixed image.
+ *
+ * The rigid-registration is performed in two steps in order:
+ * 1. translate
+ * 2. rotate
+ *
+ * Registered images are subsequently overlaid to determine the smallest
+ * rectangle that contains the most amount of fingerprint common to both.
+ * This Region of Interest (rectangle) is the area that is used to crop the
+ * moving and fixed images.
+ *
+ * These images are generated:
+ *   - Moving image that is cropped and registered to the Fixed image
+ *   - cropped, Fixed image
+ *   - padded, registered Moving image, grayscale
+ *   - padded, Fixed image, grayscale (per the registration)
+ *   - overlaid padded and registered images, in color, for visual inspection
+ *     of registration result.
+ *
  * Note that the corresponding points and metadata variables are passed by
  * reference.  This supports the potential for a corresponding-points-selection
  * 'retry' capability.  These two vectors may be cleared prior to each call
  * of the performRegistration() function.
- * 
+ *
  * If any control-point in the pair of corresponding points is identical, then
- * the calculation of the CropROI will fail, ie, the area of crop region will
+ * the calculation of the CropROI will fail, i.e., the area of crop region will
  * be zero.  While the area=0 is not the problem, its application to perform
  * the crop is what fails.  Therefore, check for "overlapping" control-points.
- * 
+ *
+ * Note that input imagery is preferred to be 8-bit grayscale.
+ *
  * @param imgMoving IN 8-bit grayscale image to be registered with imgFixed
  * @param imgFixed IN 8-bit grayscale image to be registered-against
  *                 (by imgMoving)
@@ -74,8 +101,8 @@ Registrator::Registrator() : _correspondingPoints(_correspondingPoints),
  *                 performRegistration() function
  * @throw NFRL::Miscue for empty image or overlapping control-points
  */
-Registrator::Registrator( std::vector<uchar> imgMoving,
-                          std::vector<uchar> imgFixed,
+Registrator::Registrator( std::vector<uint8_t> imgMoving,
+                          std::vector<uint8_t> imgFixed,
                           std::vector<int> &correspondingPoints,
                           std::vector<std::string> &metadata )
   : _imgMoving(imgMoving), _imgFixed(imgFixed),
@@ -88,87 +115,84 @@ Registrator::Registrator( std::vector<uchar> imgMoving,
     throw NFRL::Miscue( "fixed img buffer is empty" );
 }
 
-/** Copy constructor.
+/** @brief Copy constructor.  This is called when passing the object by value
+ *   as parameter to Registrator constructor.
  * 
- * @param Constructor object to be copied
+ * @param Registrator object to be copied
  */
 Registrator::Registrator( const Registrator& ) :
     _correspondingPoints(_correspondingPoints), _metadata(_metadata) {}
 
-// Implement a clone operator.
-// Registrator Registrator::Clone(void) {}
-
-// Implement an assigment operator.
-// Registrator Registrator::operator=( const Registrator& ) {}
-
 
 /**
- * Retrieves the padded, colorized, overlaid, registered image from memory.
- * 
- * @return byte-stream as type std::vector<uchar>
+ * @brief Retrieves the padded, colorized, overlaid, registered image from memory.
+ *
+ * @return byte-stream
  */
-std::vector<uchar> Registrator::getColorOverlaidRegisteredImages()
+std::vector<uint8_t> Registrator::getColorOverlaidRegisteredImages()
 {
   return _vecColorOverlaidRegisteredImages;
 }
 
 /**
- * Retrieves the cropped, registered image (that was moved) from memory.
- * 
- * @return byte-stream as type std::vector<uchar>
+ * @brief Retrieves the cropped, registered image (that was moved) from memory.
+ *
+ * @return byte-stream
  */
-std::vector<uchar> Registrator::getCroppedRegisteredImage()
+std::vector<uint8_t> Registrator::getCroppedRegisteredImage()
 {
   return _vecCroppedRegisteredImage;
 }
 
-/**
- * Retrieves the cropped, fixed image from memory.
- * 
- * @return byte-stream as type std::vector<uchar>
+/** @brief Retrieves the cropped, fixed image from memory.
+ *
+ * @return byte-stream
  */
-std::vector<uchar> Registrator::getCroppedFixedImage()
+std::vector<uint8_t> Registrator::getCroppedFixedImage()
 {
   return _vecCroppedFixedImage;
 }
 
-/**
- * Retrieves the padded, grayscale Fixed image from memory.
- * 
- * @return byte-stream as type std::vector<uchar>
+/** @brief Retrieves the padded, grayscale Fixed image from memory.
+ *
+ * @return byte-stream
  */
-std::vector<uchar> Registrator::getPaddedFixedImg()
+std::vector<uint8_t> Registrator::getPaddedFixedImg()
 {
   return _vecPaddedFixedImg;
 }
 
 /**
- * Retrieves the padded, registered, grayscale Moving image from memory.
- * 
- * @return byte-stream as type std::vector<uchar>
+ * @brief Retrieves the padded, registered, grayscale Moving image from memory.
+ *
+ * @return byte-stream
  */
-std::vector<uchar> Registrator::getPaddedRegisteredMovingImg()
+std::vector<uint8_t> Registrator::getPaddedRegisteredMovingImg()
 {
   return _vecPaddedRegisteredMovingImg;
 }
 
 /**
- * Retrieves the blob region from which ROI coords were calculated.  This is
- * a PNG-compressed image.
+ * @brief Retrieves the blob region from which ROI coords were calculated.
+ *
+ * This is a PNG-compressed image.
  * 
- * @return byte-stream as type std::vector<uchar>
+ * @return byte-stream
  */
-std::vector<uchar> Registrator::getPngBlob()
+std::vector<uint8_t> Registrator::getPngBlob()
 {
   return _vecPngBlob;
 }
 
 
 /**
+ * @brief  Enable the using software the option to save image to disk.
+ *
  * @param path location on file system to save image file
+ *
  * @throw NFRL::Miscue for invalid path, corrupted image buffer
  */
-void Registrator::saveCroppedRegisteredImageToDisk( const std::string path )
+void Registrator::saveCroppedRegisteredImageToDisk( const std::string path ) const
 {
   std::vector<int> compression_params;
   compression_params.push_back(cv::IMWRITE_PNG_COMPRESSION);
@@ -196,10 +220,13 @@ void Registrator::saveCroppedRegisteredImageToDisk( const std::string path )
 
 
 /**
+ * @brief  Enable the using software the option to save image to disk.
+ *
  * @param path location on file system to save image file
+ *
  * @throw NFRL::Miscue for invalid path, corrupted image buffer
  */
-void Registrator::saveCroppedFixedImageToDisk( const std::string path )
+void Registrator::saveCroppedFixedImageToDisk( const std::string path ) const
 {
   std::vector<int> compression_params;
   compression_params.push_back(cv::IMWRITE_PNG_COMPRESSION);
@@ -227,12 +254,13 @@ void Registrator::saveCroppedFixedImageToDisk( const std::string path )
 
 
 /**
- * The registration metadata (object) is loaded in real time throughout the
- * registration process.  Therefore, it is available to the user if requested
- * (as either XML or custom type).
+ * @brief The registration metadata (object) is loaded in real time throughout
+ *  the registration process.
+ *
+ * Therefore, it is available to the user as either XML or custom type.
  * 
  * To preclude OpenCV from the API, and to simplify stringification of the
- * rotation matrix, the supporting struct (type) was made "private" to the NFLR.
+ * rotation matrix, the supporting struct (type) was made "private" to the NFRL.
  * This way, the rotation matrix as calculated by OpenCV could be used directly.
  * 
  * Per the template for the generated XML output (below), regex search and
@@ -269,7 +297,7 @@ void Registrator::saveCroppedFixedImageToDisk( const std::string path )
  *  - X15,Y16 == third control point
  *  - X27,Y28 == fourth control point
  * 
- * XML template where all of the capitalized data-fields, eg `ROTMAT1`, are
+ * XML template where all of the capitalized data-fields, e.g. `ROTMAT1`, are
  * replaced by the actual data:
  * ```
  * <registration_metadata>
@@ -444,7 +472,8 @@ void Registrator::getXmlMetadata( XmlMetadata &m )
 }
 
 
-/**
+/** @brief Build the XML one line at a time.
+ *
  * @param m container for all taglines that comprise the XML metadata
  * @param tagline line of XML to add
  */
@@ -455,9 +484,9 @@ void Registrator::buildXmlTagline( XmlMetadata& m, std::string tagline )
 
 
 /**
- * Use regex to search and replace the VALUX string in the tagline template
- * (string).
- * 
+ * @brief Use regex to search and replace the VALUX string in the tagline
+ *  template (string).
+ *
  * @param m container for all taglines that comprise the XML metadata
  * @param tagline line of XML to add
  * @param datum a registration metadata value
@@ -471,71 +500,74 @@ void Registrator::buildXmlTagline( XmlMetadata& m, std::string tagline,
 
 
 /**
- * The registration metadata (object) is loaded in real time throughout the
- * registration process.  Therefore, it is available to the user if requested
- * (as either XML or custom type).
+ * @brief The registration metadata (object) is loaded in real time throughout
+ *  the registration process.
+ *
+ * Therefore, it is available to the user as either XML or custom type.
  * To preclude OpenCV from the API, this function's parameter (struct type)
  * contains only basic/universal data types like ints, doubles, vectors,
  * and/or strings.
- * 
+ *
  * The metadata is "transferred" to the custom struct that is available to
- * the NFLR user.
- * 
+ * the NFRL user.
+ *
  * @param m OUT the metadata reference
  */
-void Registrator::getMetadata( Registrator::RegistrationMetadata &m )
+void Registrator::getMetadata( Registrator::RegistrationMetadata &m ) const
 {
   m = registrationMetadata;
 }
 
 
 /**
+ * @brief Core method.
+ *
  * Prior to registration, the images are padded on all sides with white.
  * This is done to prevent any pixels in the moving image from being "moved"
  * or "registered" outside of the fixed image boundary (else portions of the
  * fingerprint would be "cut off").
- * 
+ *
  * The moving image is translated and rotated to "match" the fixed image.
  * In other words, the fixed image is "fixed" in space and the moving image
  * is "moved" to align with the fixed.
- * 
+ *
  * Translation:
  * The first point of the moving image is moved to the first point of the
  * fixed image.
- * 
+ *
  * Rotation:
  * The angle from the horizontal for each segment in each image is calculated.
  * The difference between these angles is the amount of rotation.  The "origin"
  * of the rotation is the first, selected control point of the fixed image.
  * If the angle difference is negative, the rotation is clockwise; if positive,
  * rotation is counterclockwise.
- * 
+ *
  * For image padding that results in two images of the same size
  * (width x height):
  * 1. The "target" pad size is based on the sizes of the input images; this
- *  target WxH is then used to caluculate the padding for both images resulting
+ *  target WxH is then used to calculate the padding for both images resulting
  * in two padded images that are the same size.
  * 2. translate and rotate the MOVING to the FIXED.
- * 
+ *
  * Prior to calling this function, caller MUST update the corresponding control
  * points and metadata private variables that are passed by reference.  The
  * corresponding control points shall contain the latest set of points.
  * The metadata may be cleared prior to the call of this function; if not,
  * the metadata object shall contain info on all registration attempts.
- * 
+ *
  * Management of these Registrator object references by the caller supports
  * the registration 'retry' capability.  For retry, the images are the same
  * (and therefore do not need to be reloaded into memory), the set of
  * corresponding control points have been modified, and the corresponding
  * metadata is updated per the retry.
- * 
- * If any source image has more than one channel, ie, is a color image, that
- * image is converted to grayscale, 8-bits per pixel; the registration metadata
- * is updatedto indicate the conversion.
- * 
+ *
+ * If either source image has more than one channel, i.e., is a color image,
+ * that image is converted to grayscale(8-bits per pixel); the registration metadata
+ * is updated to indicate the conversion.
+ *
  * @throw NFRL::Miscue image control-points identical
  * @throw NFRL::Miscue corresponding points (vector) count not-equal to 8
- * @throw NFRL::Miscue OpenCV cannot decode or colorize image
+ * @throw NFRL::Miscue OpenCV cannot decode image
  * @throw NFRL::Miscue padded images not same size
  */
 void Registrator::performRegistration()
@@ -582,7 +614,7 @@ void Registrator::performRegistration()
 
   }
   catch( const cv::Exception& ex ) {
-    std::string err{"OpenCV cannot decode or colorize image: "};
+    std::string err{"OpenCV cannot decode image: "};
     err.append( ex.what() );
     throw NFRL::Miscue( err );
   }
@@ -608,7 +640,7 @@ void Registrator::performRegistration()
   // The left and top padding (values) are used to “back-out” the padding for
   // any/all registration calculations.
   // The "target" pad size is based on the sizes of the input images; this
-  // target WxH is then used to caluculate the padding for both images resulting
+  // target WxH is then used to calculate the padding for both images resulting
   // in two padded images that are the same size.
   cv::Mat paddedMovingImg, paddedFixedImg;
     {
@@ -691,7 +723,7 @@ void Registrator::performRegistration()
   }
   colorPaddedFixedImg += cv::Scalar(255,0,255);  // cyan
 
-  // Save the Fixed image input point coordindates with padding as the
+  // Save the Fixed image input point coordinates with padding as the
   // control points for registration metadata.  Since the Fixed image by
   // design does not "move" in any way, the Fixed image points are available now.
   auto fixedImgPaddedPt1 =
@@ -720,7 +752,6 @@ void Registrator::performRegistration()
                      static_cast<float>(_correspondingPoints[7]) );
   NFRL::CorrespondingPointsPair cpp2(cp1, cp2);
   _metadata.push_back( "    Pair #2: " + cpp2.to_s() );
-  // std::vector<CorrespondingPointsPair> pointPairs{ cpp1, cpp2 };
   // CorrespondingPointsPairs cpps(cpp1, cpp2);
 
 
@@ -965,8 +996,207 @@ void Registrator::performRegistration()
 }
 
 
+// START Registrator struct definitions
+
+  /** @brief `WxH`
+   *
+   * @return image dimensions as WxH */
+  std::string Registrator::ImageSize::to_s() const
+  {
+    std::string s{};
+    s = std::to_string( width );
+    s.append("x");
+    s.append( std::to_string( height) );
+    return s;
+  }
+
+  /** @brief `x,y`
+   *
+   * @return coords as a comma-separated string */
+  std::string Registrator::Point::to_s() const
+  {
+    std::string s{};
+    s = std::to_string(x);
+    s.append(",");
+    s.append(std::to_string(y));
+    return s;
+  }
+
+  /** @brief Insert the coords into vector of ints: in order x, y.
+   *
+   * @param center vector reference
+   */
+  void Registrator::Point::to_v( std::vector<int> &center )
+  {
+    center.clear();
+    center.push_back( x );
+    center.push_back( y );
+  }
+
+  /**
+   * @brief Retrieve the rotation transform as string elements of vector.
+   *
+   * Each element of the returned vector is one row of the transform.
+   *
+   * @return vector with each row of the transform in each element
+   */
+  std::vector<std::string> Registrator::RegistrationMetadata
+                                      ::getRotationTransform()
+  {
+    size_t tRows{rotMatrix.size()};
+    size_t tCols{rotMatrix[1].size()};
+    std::vector<std::string> v;
+
+    std::string sTmp{""};
+    std::string sMatrix{""};
+    for( size_t i=0; i<tRows; i++ )
+    {
+      for( size_t j=0; j<tCols; j++ )
+      {
+        sTmp = std::to_string( rotMatrix[i][j] );
+        sMatrix.append(sTmp);
+        if( j < tCols-1 )
+          sMatrix.append(" ");
+      }
+      v.push_back( sMatrix );
+      sMatrix = "";   // clear it for next row
+    }
+    return v;
+  }
+
+  /**
+   * @brief Retrieve the translation transform as string elements of vector.
+   *
+   * Each element of the returned vector is one row of the transform.
+   *
+   * @return vector with each row of the transform in each element
+   */
+  std::vector<std::string> Registrator::RegistrationMetadata
+                                      ::getTranslationTransform()
+  {
+    size_t tRows{translMatrix.size()};
+    size_t tCols{translMatrix[1].size()};
+    std::vector<std::string> v;
+
+    std::string sTmp{};
+    std::string sMatrix{};
+    for( size_t i=0; i<tRows; i++ )
+    {
+      for( size_t j=0; j<tCols; j++ )
+      {
+        sTmp = std::to_string( translMatrix[i][j] );
+        sMatrix.append(sTmp);
+        if( j < tCols-1 )
+          sMatrix.append(" ");
+      }
+      v.push_back( sMatrix );
+      sMatrix = "";   // clear it for next row
+    }
+    return v;
+  }
+
+  /** @brief Get the point as string in customized point-format.
+   *
+   * @param pointNum either of 1 | 2 | 3 | 4
+   */
+  std::string Registrator::RegistrationMetadata
+                         ::ControlPoints::getControlPoint( short pointNum )
+  {
+    std::string key = "pt" + std::to_string(pointNum);
+    auto p = point[key];
+    return p.to_s();
+  }
+
+  /** @brief Set the point coordinates and push into map of control points.
+   *
+   * @param pointNum either of 1 | 2 | 3 | 4
+   * @param x coordinate
+   * @param y coordinate
+   */
+  void Registrator::RegistrationMetadata
+                  ::ControlPoints::setControlPoint( short pointNum, int x, int y )
+  {
+    Registrator::Point p;
+    p.x = x;
+    p.y = y;
+    std::string key = "pt" + std::to_string(pointNum);
+    point[key] = p;
+  }
+
+  /** @brief For logging, return distance
+   *
+   * @return constrained-points distance to string: always zero
+   */
+  std::string Registrator::RegistrationMetadata
+                         ::ControlPoints::EuclideanDistance
+                         ::to_s_constrained() const
+  {
+    std::string s{std::to_string(constrained)};
+    return s;
+  }
+
+  /** @brief For logging, return distance
+   *
+   * @return unconstrained-points distance to string
+   */
+  std::string Registrator::RegistrationMetadata
+                         ::ControlPoints::EuclideanDistance
+                         ::to_s_unconstrained() const
+  {
+    std::string s{std::to_string(unconstrained)};
+    return s;
+  }
+
+  /** @brief Quick check if either image was converted.
+   *
+   * @return true if either image converted, false otherwise
+   */
+  bool Registrator::RegistrationMetadata::ConvertToGrayscale::any() const
+  {
+    if( img1 || img2 )
+      return true;
+    else
+      return false;
+  }
+
+  /** @return "YES" if image was converted to grayscale, "NO" otherwise. */
+  std::string Registrator::RegistrationMetadata
+                         ::ConvertToGrayscale::img1_to_s() const
+  {
+    if( img1 ) return "YES";
+    else return "NO";
+  }
+
+  /** @return "YES" if image was converted to grayscale, "NO" otherwise. */
+  std::string Registrator::RegistrationMetadata
+                         ::ConvertToGrayscale::img2_to_s() const
+  {
+    if( img2 ) return "YES";
+    else return "NO";
+  }
+
+  /** @brief "Direction" of the ratio.
+   *
+   *  @return [ img1/img2 | img2/img1 ]
+   */
+  std::string Registrator::RegistrationMetadata
+                         ::ScaleFactor::getScaleFactorDirection() const
+  {
+    std::string s{};
+    switch( direction )
+    {
+      case img1_to_img2 : s = "img1/img2"; break;
+      case img2_to_img1 : s = "img2/img1"; break;
+      default           : s = "undefined"; break;
+    }
+    return s;
+  }
+
+
+// END Registrator struct definitions
+
 /**
- * @return NFLR and OpenCV versions
+ * @return the current versions of this NFRL software and OpenCV
  */
 std::string printVersion()
 {

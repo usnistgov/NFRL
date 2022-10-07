@@ -20,7 +20,7 @@ Library files are located here on successful build:
 
 
 ## Linux
-In a terminal, navigate to the 'build' subdir:
+In a terminal, navigate to this 'build' subdir:
 
 NFRL core:
 cmake ..

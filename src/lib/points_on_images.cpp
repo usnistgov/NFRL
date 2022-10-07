@@ -31,8 +31,7 @@ identified are necessarily the best available for the purpose.
 namespace NFRL {
 
 /**
- * Base class constructor.  Calculates the scale factor (ratio) between
- * image-pair segments.
+ * @brief Calculate the scale factor (ratio) between image-pair segments.
  * 
  * @param pairMoving points on moving image
  * @param pairFixed  points on fixed image
@@ -45,20 +44,22 @@ PointsOnImages::PointsOnImages( NFRL::PointsOnImage &pairMoving,
 }
 
 /**
- * Scale factor based on length of segments.  Scale factor is ratio of segment
- * lengths on each image: (img1 / img2).
+ * @brief Scale factor based on length of segments.
+ *
+ * Scale factor is ratio of segment lengths on each image: (img1 / img2).
  * 
  * @return the scale factor
  */
-double PointsOnImages::getScaleFactor()
+double PointsOnImages::getScaleFactor() const
 {
   return _scaleFactor;
 }
 
-/**
+/** @brief The points-pairs on the (same) image for both images.
+ *
  * @return string of point-pairs on both images
  */
-std::string PointsOnImages::to_s()
+std::string PointsOnImages::to_s() const
 {
   std::string out;
   std::string s1 = _pairMoving.to_s("moving");

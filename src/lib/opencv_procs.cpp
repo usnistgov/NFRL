@@ -32,28 +32,29 @@ identified are necessarily the best available for the purpose.
 namespace CVops {
 
 /**
- * Use OpenCV adaptiveThreshold() to convert a grayscale image to binary.
+ * @brief Uses OpenCV adaptiveThreshold() to convert a grayscale image to binary.
+ *
  * That is, the resulting image has pixels values of either 0 (black) or
  * 255 (white).
- * 
+ *
  * The threshold value (parameter) is compared against each pixel value in the
  * source image; it (the threshold value) is calculated for smaller regions and
  * therefore, there will be different threshold values for different regions.
- * 
- * Binarized image is INverted.
+ *
+ * Binarized image is inverted.
  * ```
  * if source-pixel < threshold
  *   destination-pixel = maxBinaryValue
  * else
  *   destination-pixel = 0
  * ```
- * 
+ *
  * @param imgIn IN image to binarize
  * @param imgBinary OUT resulting binarized image
  * @param maxBinaryValue non-zero value assigned to the pixels for which the
  *                       condition is satisfied
  */
-void binarize_image_via_adaptive_threshold( cv::Mat imgIn,
+void binarize_image_via_adaptive_threshold( const cv::Mat &imgIn,
                                             cv::Mat &imgBinary,
                                             const int maxBinaryValue )
 {
@@ -66,48 +67,53 @@ void binarize_image_via_adaptive_threshold( cv::Mat imgIn,
 }
 
 /**
- * Use OpenCV threshold() to convert a grayscale image to binary. That is, the
- * resulting image has pixels values of either 0 (black) or 255 (white).
- * 
+ * @brief Uses OpenCV threshold() to convert a grayscale image to binary.
+ *
+ * That is, the resulting image has pixels values of either 0 (black)
+ * or 255 (white).
+ *
  * The Otsu flag tells the threshold function to use Otsu’s method in
  * automatically determining a global threshold value (and thus the “hard-coded”
  * threshold value parameter is ignored).
- * 
+ *
  * @param imgIn IN image to binarize
  * @param imgBinary OUT resulting binarized image
  * @param maxBinaryValue 255 for grayscale
  */
-void binarize_image_via_otsu_threshold( cv::Mat imgIn, cv::Mat &imgBinary,
-                                        const int maxBinaryValue )
+void binarize_image_via_otsu_threshold( const cv::Mat &imgIn,
+                                        cv::Mat &imgBinary,
+                                        const int &maxBinaryValue )
 {
   cv::threshold( imgIn, imgBinary, 0, maxBinaryValue,
                  cv::THRESH_BINARY | cv::THRESH_OTSU );
 }
 
 /**
- * Use OpenCV threshold() to convert a grayscale image to binary. That is, the
- * resulting image has pixels values of either 0 (black) or 255 (white).
- * 
+ * @brief Uses OpenCV threshold() to convert a grayscale image to binary.
+ *
+ * That is, the resulting image has pixels values of either 0 (black)
+ * or 255 (white).
+ *
  * The threshold value (parameter) is compared against each pixel value in the
  * source image.  If the pixel value is less than threshold, set the
  * corresponding pixel in the output image to zero.  If greater, set to
  * maxBinaryValue.
- * 
+ *
  * ```
  * if source-pixel < threshold
  *   destination-pixel = 0
  * else
  *   destination-pixel = maxBinaryValue
  * ```
- * 
+ *
  * @param imgIn IN image to binarize
  * @param imgBinary OUT resulting binarized image
  * @param threshold 250 seems to work well
  * @param maxBinaryValue 255 for grayscale
  */
-void binarize_image_via_threshold( cv::Mat imgIn, cv::Mat &imgBinary,
-                                   const int threshold,
-                                   const int maxBinaryValue )
+void binarize_image_via_threshold( const cv::Mat &imgIn, cv::Mat &imgBinary,
+                                   const int &threshold,
+                                   const int &maxBinaryValue )
 {
   cv::threshold( imgIn, imgBinary, threshold, maxBinaryValue,
                  cv::THRESH_BINARY );
@@ -115,12 +121,13 @@ void binarize_image_via_threshold( cv::Mat imgIn, cv::Mat &imgBinary,
 
 
 /**
- * Convert cv::Mat type to 2D array of vectors.
- * 
+ * @brief Convert cv::Mat type to 2D array of vectors.
+ *
  * @param matrix to convert
+ *
  * @return Rotate2D
  */
-Rotate2D cast_rotation_matrix( cv::Mat matrix )
+Rotate2D cast_rotation_matrix( const cv::Mat &matrix )
 {
   int tRows{matrix.rows};
   int tCols{matrix.cols};
@@ -138,12 +145,13 @@ Rotate2D cast_rotation_matrix( cv::Mat matrix )
 
 
 /**
- * Convert cv::Mat type to 2D array of vectors.
- * 
+ * @brief Convert cv::Mat type to 2D array of vectors.
+ *
  * @param matrix to convert
+ *
  * @return Translate2D
  */
-Translate2D cast_translation_matrix( cv::Mat matrix )
+Translate2D cast_translation_matrix( const cv::Mat &matrix )
 {
   int tRows{matrix.rows};
   int tCols{matrix.cols};
@@ -161,14 +169,15 @@ Translate2D cast_translation_matrix( cv::Mat matrix )
 
 
 /**
- * Utilize the OpenCV capability to crop an image given a cv::Rect object
- * that represents the rectangular region to crop.
- * 
+ * @brief Uses OpenCV crop_image() to crop an image given a cv::Rect object
+ *  that represents the rectangular region to crop.
+ *
  * @param img to crop
  * @param roi region of interest (the crop region)
+ *
  * @return matrix that is the cropped image
  */
-cv::Mat crop_image( cv::Mat img, cv::Rect roi)
+cv::Mat crop_image( const cv::Mat &img, const cv::Rect &roi)
 {
   cv::Mat cropped = img( roi );
   return cropped;
@@ -176,9 +185,11 @@ cv::Mat crop_image( cv::Mat img, cv::Rect roi)
 
 
 /**
- * Use OpenCV `dilate()` to detect to dilate/thicken the image.  Generate the
- * structuring element that is the kernel used during the dilate operation.
- * 
+ * @brief Uses OpenCV dilate() to dilate/thicken the image.
+ *
+ * Generate the structuring element that is the kernel used during the dilate
+ * operation.
+ *
  * cv::dilate signature:
  * ```
  * void dilate( InputArray src, OutputArray dst, InputArray kernel,
@@ -187,7 +198,7 @@ cv::Mat crop_image( cv::Mat img, cv::Rect roi)
  *              const Scalar& borderValue=morphologyDefaultBorderValue() )
  * note: for kernel, cv::Mat() is 3x3 by default
  * ```
- * 
+ *
  * From opencv2/imgproc.hpp, line 230:
  * ```
  * enum MorphShapes {
@@ -196,44 +207,43 @@ cv::Mat crop_image( cv::Mat img, cv::Rect roi)
  *     MORPH_ELLIPSE = 2
  * };
  * ```
- * 
- * TODO: put the kernel as passed-in params.
- * 
+ *
  * @param img IN image to dilate
  * @param imgDilate OUT resulting dilated image
  * @param knlSize IN size of structuring-element kernel
  * @param knlType IN type of structuring-element kernel
  */
-void image_dilate( cv::Mat img, cv::Mat &imgDilate, int knlSize, int knlType )
+void image_dilate( const cv::Mat &img, cv::Mat &imgDilate,
+                   const int &knlSize, const int &knlType )
 {
-  // cv::dilate( img, imgDilate, cv::Mat(), cv::Point(-1, -1), 2, 1, 1 );
-
   cv::Mat element = cv::getStructuringElement( knlType,
-                       cv::Size( 2*knlSize + 1, 2*knlSize+1 ),
-                       cv::Point( knlSize, knlSize ) );
+                    cv::Size( 2*knlSize + 1, 2*knlSize+1 ),
+                    cv::Point( knlSize, knlSize ) );
   cv::dilate( img, imgDilate, element );
 }
 
 
 /**
- * "Sum" the two image erosions to calculate the overlap.  This is done
- * pixel-by-pixel.  If both pixels are black (0), then set the pixel at the
- * coordinates to 0.  Otherwise set to white (255).
+ * @brief "Sum" the two image erosions to calculate the overlap.
+ *
+ * This is done pixel-by-pixel.  If both pixels are black (0), then set the
+ * pixel at the coordinates to 0.  Otherwise set to white (255).
  * Obviously, both images must have the same width-by-height dimensions.
  * 
  * @param img1 IN addend
  * @param img2 IN addend
  * @param imgSum OUT the sum of the two binary images
  */
-void sum_two_binary_images( cv::Mat img1, cv::Mat img2, cv::Mat imgSum )
+void sum_two_binary_images( const cv::Mat &img1, const cv::Mat &img2,
+                            cv::Mat &imgSum )
 {
   for(int i=0; i < img1.rows; i++) {
     for(int j=0; j < img1.cols; j++) {
-      if( (img1.at<uchar>(i,j) == 0 ) && (img2.at<uchar>(i,j) == 0 ) ) {
-        imgSum.at<uchar>(i,j) = 0;
+      if( (img1.at<uint8_t>(i,j) == 0 ) && (img2.at<uint8_t>(i,j) == 0 ) ) {
+        imgSum.at<uint8_t>(i,j) = 0;
       }
       else {
-        imgSum.at<uchar>(i,j) = 255;
+        imgSum.at<uint8_t>(i,j) = 255;
       }
     }
   }
@@ -241,14 +251,17 @@ void sum_two_binary_images( cv::Mat img1, cv::Mat img2, cv::Mat imgSum )
 
 
 /**
+ * @brief Support for logging.
+ *
  * @param matrix to convert to single string
+ *
  * @return single string including new-lines to nicely format the matrix
  */
-std::string rotation_matrix_to_s( cv::Mat matrix )
+std::string rotation_matrix_to_s( const cv::Mat &matrix )
 {
   int tRows{matrix.rows};
   int tCols{matrix.cols};
-  std::string sTmp{""};
+  std::string sTmp{};
   std::string sMatrix{"["};
   for( int i=0; i<tRows; i++ )
   {
@@ -268,14 +281,17 @@ std::string rotation_matrix_to_s( cv::Mat matrix )
 
 
 /**
+ * @brief Support for logging.
+ *
  * @param matrix to convert to single string
+ *
  * @return single string including new-lines to nicely format the matrix
  */
-std::string translation_matrix_to_s( cv::Mat matrix )
+std::string translation_matrix_to_s( const cv::Mat &matrix )
 {
   int tRows{matrix.rows};
   int tCols{matrix.cols};
-  std::string sTmp{""};
+  std::string sTmp{};
   std::string sMatrix{"["};
   for( int i=0; i<tRows; i++ )
   {

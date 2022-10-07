@@ -32,8 +32,10 @@ identified are necessarily the best available for the purpose.
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-/** This namespace implements a "wrapper" to the NFRL "core" library that
- * enables the user to use OpenCV in the API.
+/**
+ * @brief Implements a "wrapper" to the NFRL "core" library that takes image
+ *  data as OpenCV types in the API.
+ *
  * The public class and all public methods exposed here reference the
  * corresponding public interfaces in the NFRL-core.
  * This wrapper prevents any would-be-required duplication of code in the event
@@ -44,31 +46,32 @@ identified are necessarily the best available for the purpose.
  * For example:
  * ```
  *   NFRL_ITL::Registrator *r2;
- * 
+ *
  *   NFRL::Registrator::RegistrationMetadata rm2;
- * 
+ *
  *   NFRL_ITL::printVersion();
- * 
+ *
  *   catch( NFRL::Miscue &e ) {}
  * ```
  */
 namespace NFRL_ITL {
 
+/** @brief Wrapper API to support OpenCV. */
 class Registrator
 {
 private:
 
-  // Declare the pointer used for "new" operator, and "delete".
+  /** @brief Declare the pointer used for "new" operator, and "delete". */
   NFRL::Registrator *_r2;
 
-  /** Byte-stream of the Moving image. */
+  /** @brief Byte-stream of the Moving image. */
   cv::Mat _imgMovingMat;
-  /** Byte-stream of the Fixed image. */
+  /** @brief Byte-stream of the Fixed image. */
   cv::Mat _imgFixedMat;
-  /** 8 individual coordinates of the two registration pairs of points. */
+  /** @brief 8 individual coordinates of the two registration pairs of points. */
   std::vector<int> &_correspondingPoints;
-  /** Each run of the registration process captures metadata for use by
-   *  the caller. */
+  /** @brief Each run of the registration process captures metadata for use
+   *   by the caller. */
   std::vector<std::string> &_metadata;
 
 public:
@@ -78,19 +81,11 @@ public:
   // Copy constructor.
   Registrator( const Registrator& );
 
-  // Full constructor.
+  /** @brief Full constructor used by NFRL with OpenCV API. */
   Registrator( cv::Mat &, cv::Mat &,
                std::vector<int> &, std::vector<std::string> & );
+  virtual ~Registrator() { delete _r2; }
 
-  // Virtual destructor.
-  virtual ~Registrator() {}
-
-
-  /**
-   * This is the function that performs the registration. It uses the private
-   * member variables of the two images and the corresponding control points
-   * vector.
-   */
   void performRegistration();
 
   void getMetadata( NFRL::Registrator::RegistrationMetadata& );
@@ -114,9 +109,8 @@ public:
 
 };
 
-/**
- * @return the current versions of this NFRL software and OpenCV
- */
+/** @brief Wrapper method, returns the current versions of this
+ *   NFRL software and OpenCV. */
 std::string printVersion();
 
 

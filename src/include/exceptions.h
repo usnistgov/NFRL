@@ -32,30 +32,37 @@ identified are necessarily the best available for the purpose.
 
 namespace NFRL {
 
-/** Handle exceptions thrown by the Registrator constructor and subsequent
- *  method calls.
- */
-class Miscue: public std::exception {
 
-  /** Custom error description. */
-  std::string _msg{""};
+/**
+ * @brief Handle exceptions thrown by the Registrator constructor and subsequent
+ * method calls.
+*/
+class Miscue final: public std::exception {
+
+  /** @brief Custom error description. */
+  std::string _msg{};
 
 public:
-  /**
-   * @param msg error message
+
+  /** @brief Constructor.
+   *
+   * @param msg Custom error message.
    */
   Miscue( const std::string msg ) : _msg(msg) {}
+  ~Miscue() {}
 
-  /** Utilize custom error message.
+  /** @brief Utilize custom error message.
    *
    * @return text of the error message
    */
-  std::string message()
+  std::string message() const
   {
     return "NFRL Exception: " + _msg;
   }
 
-  /**
+
+  /** @brief Message passed into instance.
+   *
    * @return text of the error message
    */
   const char* what() const noexcept override

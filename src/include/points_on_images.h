@@ -34,9 +34,8 @@ identified are necessarily the best available for the purpose.
 namespace NFRL {
 
 /**
- * Each image has one pair of points that correspond to the other (image).
- * These are not the corresponding point pairs but are the points on the same
- * image and the Euclidean distance between them is the "segment".
+ * @brief Points on the same image where the Euclidean distance between them
+ *  is the "segment".
  * 
  * These points are passed into the constructor, and the constructor calculates
  * the scale factor(sf) where sf is the ratio of the segments.
@@ -45,22 +44,20 @@ class PointsOnImages
 {
 
 public:
-  // Full constructor.
+  /** @brief Full constructor used by NFRL. */
   PointsOnImages( NFRL::PointsOnImage &, NFRL::PointsOnImage & );
-
-  // Virtual destructor.
   virtual ~PointsOnImages() {}
 
-  double getScaleFactor();
-  std::string to_s();
+  double getScaleFactor() const;
+  std::string to_s() const;
 
 private:
-  /** First and second points on Moving image. */
+  /** @brief First and second points on Moving image. */
   NFRL::PointsOnImage &_pairMoving;
-  /** First and second points on Fixed image. */
+  /** @brief First and second points on Fixed image. */
   NFRL::PointsOnImage &_pairFixed;
 
-  /** Ratio of image segment lengths */
+  /** @brief Ratio of image segment lengths. */
   double _scaleFactor;
 
 };

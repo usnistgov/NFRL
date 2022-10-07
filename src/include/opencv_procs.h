@@ -31,18 +31,21 @@ identified are necessarily the best available for the purpose.
 
 #include <opencv2/core/core.hpp>
 
+/**
+ * @brief Friendly interfaces to OpenCV methods.
+*/
 namespace CVops {
 
-void binarize_image_via_adaptive_threshold( cv::Mat, cv::Mat &, const int = 1 );
-void binarize_image_via_otsu_threshold( cv::Mat, cv::Mat &, const int );
-void binarize_image_via_threshold( cv::Mat, cv::Mat&, const int, const int );
-cv::Mat crop_image( cv::Mat, cv::Rect );
-void image_dilate( cv::Mat, cv::Mat&, int, int );
-void sum_two_binary_images( cv::Mat, cv::Mat, cv::Mat );
+void binarize_image_via_adaptive_threshold( const cv::Mat&, cv::Mat &, const int = 1 );
+void binarize_image_via_otsu_threshold( const cv::Mat&, cv::Mat &, const int& );
+void binarize_image_via_threshold( const cv::Mat&, cv::Mat&, const int&, const int& );
+cv::Mat crop_image( const cv::Mat&, const cv::Rect& );
+void image_dilate( const cv::Mat&, cv::Mat&, const int&, const int& );
+void sum_two_binary_images( const cv::Mat&, const cv::Mat&, cv::Mat& );
 
-Rotate2D cast_rotation_matrix( cv::Mat );
-Translate2D cast_translation_matrix( cv::Mat );
-std::string rotation_matrix_to_s( cv::Mat );
-std::string translation_matrix_to_s( cv::Mat );
+Rotate2D cast_rotation_matrix( const cv::Mat& );
+Translate2D cast_translation_matrix( const cv::Mat& );
+std::string rotation_matrix_to_s( const cv::Mat& );
+std::string translation_matrix_to_s( const cv::Mat& );
 
 }   // END namespace

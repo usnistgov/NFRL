@@ -29,7 +29,7 @@ identified are necessarily the best available for the purpose.
 
 namespace NFRL {
 
-/** Initialization function that resets all values. */
+/** @brief Initialization function that resets all values. */
 void PointsOnImage::Init() {
   _pointOne = cv::Point2f(0, 0);
   _pointTwo = cv::Point2f(0, 0);
@@ -38,29 +38,33 @@ void PointsOnImage::Init() {
   _sideY = -1;
 }
 
-/** Copy function to make clones of the object. */
+/** @brief Supports copy-constructor. */
 void PointsOnImage::Copy( const PointsOnImage& aCopy )
 {
   _pointOne = aCopy._pointOne;
   _pointTwo = aCopy._pointTwo;
 }
 
-/** Default constructor. Calls Init(). */
+/** @brief Default constructor. Calls Init(). */
 PointsOnImage::PointsOnImage()
 {
   Init();
 }
 
-/** Copy constructor.  This is called when passing the object by value
- *  as parameter to PointsOnImages constructor. */
+/** @brief Copy constructor.
+ *
+ * This is called when passing the object by value as parameter to
+ * PointsOnImages constructor.
+ */
 PointsOnImage::PointsOnImage( const PointsOnImage& aCopy )
 {
   Copy( aCopy );
 }
 
 /**
- * Base class constructor calculates the angle between the segment defined
- * by the two points and the horizontal.
+ * @brief Calculate the angle between the segment defined by the two points
+ *  and the horizontal.
+ *
  * The horizontal is defined by standard Cartesian coordinates:
  *    from 0 to positive X.
  * 
@@ -124,12 +128,13 @@ PointsOnImage::PointsOnImage( cv::Point2f pointOne, cv::Point2f pointTwo )
 }
 
 /**
- * Return all info in single string.
- * 
+ * @brief All metadata per registration.
+ *
  * @param kind [ moving | fixed ] image
+ *
  * @return single string (with trailing `\n`) of all relevant info
  */
-std::string PointsOnImage::to_s( std::string kind )
+std::string PointsOnImage::to_s( const std::string &kind ) const
 {
   std::string str0{""}, str1{""}, str2{""}, str3{""};
   str0 = "(" + std::to_string(_pointOne.x) + ", "
@@ -144,10 +149,11 @@ std::string PointsOnImage::to_s( std::string kind )
   return str0 + str1 + str2 + str3;
 }
 
-/**
+/** @brief The points-pair on the (same) image.
+ *
  * @return points on image in a vector container
  */
-std::vector<cv::Point2f> PointsOnImage::getVectorOfPoints()
+std::vector<cv::Point2f> PointsOnImage::getVectorOfPoints() const
 {
   std::vector<cv::Point2f> v;
   v.push_back( _pointOne );
