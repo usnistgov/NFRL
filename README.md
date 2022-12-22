@@ -30,9 +30,9 @@ Runtime configuration parameters include:
 
 The fingerprint-image rigid-registration process is performed in two steps:
 
-1. Translation of the Moving image to the Fixed image using the "first" pair of control-points (the *un*-constrained pair)
+1. Translation of the Moving image to the Fixed image using the "first" pair of control-points (the constrained pair)
 2. Rotation of the Moving image around the Fixed image control-point (the translation "target" location) based on the
-angle-difference determined by the "second" pair of control-points (the constrained pair).
+angle-difference determined by the "second" pair of control-points (the *un*-constrained pair).
 
 Both final images, a few interim images, and registration metadata generated during the registration process
 are made available to the using software:
