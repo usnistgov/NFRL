@@ -65,66 +65,53 @@ PointsOnImage::PointsOnImage( const PointsOnImage& aCopy )
  * @brief Calculate the angle between the segment defined by the two points
  *  and the horizontal.
  *
- * The horizontal is defined by standard Cartesian coordinates:
- *    from 0 to positive X.
- * 
- * Point x-coordinate: parallel to the horizontal.
- * Point y-coordinate: parallel to the vertical.
- * 
  * Since image origin (0, 0) is the top-left corner, all point coordinates
  * are positive, and therefore x increases to the right and y increases down.
+ *
+ * Since OpenCV defines the origin of an image to be the top-left corner, the
+ * angle that this function calculates must be the additive inverse of the
+ * actual calculation.
+ *
+ * For a segment that is not vertical, sideX is not equal to 0 so its slope
+ * is calculated.  Then, to compensate for Y-axis positive down, check sign
+ * of sideX and slope, and take the additive inverse if necessary.
+ *
+ * For example, if the segment is vertical pointing up, then in classic
+ * Cartesian context, the angle from horizontal is +90 degrees.  However,
+ * since the Y-axis increases down, this function returns -90 degrees.
  * 
- * Because the image origin is located at top-left, the slope of the segment
- * is the negative of the calculated slope.
- * 
- * Calculations are based on the following:
- * 
- * 1. Point 1 to Point 2 defines the segment; think of it as a "ray"
- * 2. Point 1 is defined as the "origin" of the ray
- * 3. For the OpenCV rotation matrix calculation, Point 2 is rotated to align
- *    with Point 1.
- * 
- * There are 4 possible segment displacements. Slope and angle are defined
- * as follows:
- * 1. Point 2 below and to the right of Point 1; slope defined as negative,
- *    angle from horizontal defined as negative
- * 2. Point 2 above and to the right of Point 1; slope is positive,
- *    angle is positive
- * 3. Point 2 above and to the left of Point 1; slope is negative,
- *    angle is positive
- * 4. Point 2 below and to the left of Point 1; slope is positive,
- *    angle is negative
- * 
- * The range of cosine is 0-180 degrees, but 4 angles must be taken into
- * account, 2 positive and 2 negative.
- * 
- * Consequently, the opposite of the calculated angle must be used based
- * on the sign of sideX and the slope.
- * 
- * Note there is no assertion for potential divide-by-zero error.  This should
- * never occur because Miscue is thrown prior to this constructor being called
- * when control-point-pair for "same" image (vs across images) contains the
- * identical point (x,y) coordinates.
+ * Range of angleDegrees: [0,360].
  * 
  * @param pointOne (x,y) first-selected point on image
  * @param pointTwo (x,y) second-selected point on image
  */
 PointsOnImage::PointsOnImage( cv::Point2f pointOne, cv::Point2f pointTwo )
 {
+  double pi = 2 * acos(0.0);
   _pointOne = pointOne;
   _pointTwo = pointTwo;
 
   _sideX = _pointTwo.x - _pointOne.x;
   _sideY = _pointTwo.y - _pointOne.y;
-  _slope = (float)_sideY / (float)_sideX;
-  _slope = -_slope;    // image origin is located at top-left
   segmentLength = sqrt( std::pow(_sideX, 2) + std::pow(_sideY, 2) ) ;
 
-  angleDegrees = std::acos( _sideX / segmentLength ) * 180.0 / 3.141592653589;
-  if( ( _sideX > 0.0 ) && ( _slope < 0 ) )
-    angleDegrees = -angleDegrees;
-  else if( ( _sideX < 0.0 ) && ( _slope > 0 ) )
-    angleDegrees = -angleDegrees;
+  if(( _sideX == 0) && (pointTwo.y > pointOne.y)) {  // vertical ray down
+    angleDegrees = 90.0;
+  }
+  else if(( _sideX == 0) && (pointTwo.y <= pointOne.y)) {   // vertical ray up
+    angleDegrees = -90.0;
+  }
+  else {
+    _slope = _sideY / _sideX;
+    angleDegrees = std::acos( _sideX / segmentLength ) * 180.0 / pi;
+
+    if( ( _sideX > 0.0 ) && ( _slope < 0 ) ) {   // classic Cartesian quad IV
+      angleDegrees *= -1.0;
+    }
+    else if( ( _sideX < 0.0 ) && ( _slope > 0 ) ) {   // classic Cartesian quad II
+      angleDegrees *= -1.0;
+    }
+  }
 }
 
 /**

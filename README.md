@@ -70,30 +70,43 @@ the padding for both images resulting in two padded images that are the same siz
 Therefore, any ODD row or column are *flushed-out* at the right and bottom.  Subsequently, the left and top padding
 (values) are used to *back-out* the padding for any/all registration calculations.
 
-## Registration
-First, the translation matrix is calculated and is input into an algorithm that performs the translation of the padded,
-Moving image to the padded Fixed image.  The pair of control-points used for translation (only) is denoted as
-"unconstrained" because these points may be anywhere in each image. The generated, translated output image is the input
-image for rotation.
+## Rigid Registration
+Registration is performed in two steps: translation and then rotation.
 
-It follows that the "constrained pair" of control points is "connected" to the unconstrained pair because they are
+### Translation
+First, the translation matrix is calculated and is input into an algorithm that performs the translation of the padded
+Moving image to the padded Fixed image.  The translated output image is the input image for rotation.
+
+The pair of control-points used for translation (only) is denoted as "constrained" because these points have the same
+coordinates after translation.  It follows that the Euclidean distance between them is zero.  
+
+This "new origin" after translation is the constrained control point of the Fixed image (the translation "target"
+location) plus the pixel location offsets (x,y) due to padding.
+
+### Rotation
+Second, the rotation matrix is calculated and is input into an algorithm that performs the rotation of the Moving image
+that has been translated.
+
+The angle from the horizontal for each line-segment within each image is calculated.  Note that each angle's value
+is the addative inverse of its stardard Cartesian counterpart because OpenCV specifies the top-left corner of an image
+as the origin.
+
+The difference between these two angles is the degrees of rotation (-360, 360).  If the angle difference is negative,
+the rotation is clockwise; if positive, rotation is counterclockwise.
+
+The pair of control-points used for rotation (only) is denoted as "unconstrained" because these points are
 "dragged along" with the translation.
 
-Second, the padded, translated Moving image is rotated around the corresponding, unconstrained control-point of the
-padded Fixed image, that is, the point to which to Moving image has been translated.  Again, this *origin* of the
-rotation is the corresponding, unconstrained control point of the Fixed image (the translation "target" location) plus
-the pixel location offsets (x,y) due to padding.
-The angle from the horizontal for each line-segment within each image is calculated.  The difference between these angles
-is the amount of rotation.  If the angle difference is negative, the rotation is clockwise; if positive, rotation is
-counterclockwise.
+The padded, translated Moving image is rotated around the corresponding, constrained control-point of the padded Fixed
+image, that is, the point to which to Moving image has been translated.  That is, the images are now **registered**.
 
-The rotation matrix is calculated and is input into an algorithm that performs the rotation of the Moving image.
-The generated, rotated output image is the registered image (padded).  These padded, registered images (grayscale)
-and the overlapped image (colorized) are made available to the using-software for viewing to check for accuracy.
+The padded, registered images (grayscale, Fixed and Moving) and the overlapped image (colorized) are made available
+to the using-software for viewing to check for accuracy.
 
 ## Final Registered Images
 The images are now registered, but they must be cropped.  The area to crop is the minimum area
 (ROI - region of interest) that is common to both images.
+
 The Otsu method for threshold is used to binarize source images in support of crop-region calculation.
 Each registered image is binarized and the binary images are *summed* into a new image (array).  This *sum* is done
 pixel-by-pixel; if both pixels are black (0), then set the pixel at the coordinates to 0.  Otherwise set to white (255).
