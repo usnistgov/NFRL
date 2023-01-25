@@ -1203,7 +1203,7 @@ std::string printVersion()
   std::string s{ "NFRL (NIST Fingerprint Registration Library) version: " };
   std::string v{ NFRL_VERSION };
   s.append(v);
-  s.append( "\nOpenCV version: ");
+  s.append( "\nNFRL using OpenCV version: ");
   s.append(CV_VERSION);
   return s;
 }

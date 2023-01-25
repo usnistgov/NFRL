@@ -72,14 +72,7 @@ Registrator::Registrator( cv::Mat &imgMoving,
                   imgFixed, largerImgData,
                   param);
 
-    // metadataVisualInspection.clear();
-    _r2 = new NFRL::Registrator( smallerImgData, largerImgData,
-                                 _correspondingPoints,
-                                 _metadata );
-    // std::unique_ptr<NFRL::Registrator> _r2(
-    //   new NFRL::Registrator(smallerImgData, largerImgData,
-    //                         _correspondingPoints,
-    //                         _metadata) );
+    _r2.reset(new NFRL::Registrator( smallerImgData, largerImgData, _correspondingPoints, _metadata ));
   }
   catch( NFRL::Miscue &e )
   {
@@ -94,7 +87,14 @@ Registrator::Registrator( cv::Mat &imgMoving,
  */
 void Registrator::performRegistration()
 {
-  _r2->performRegistration();
+  try
+  {
+    _r2->performRegistration();
+  }
+  catch( NFRL::Miscue &e )
+  {
+    throw e;
+  }
 }
 
 /**

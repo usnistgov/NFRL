@@ -458,7 +458,7 @@ include(D:/OpenCV/opencv-4.5.0/build/x64/vc15/lib/OpenCVConfig.cmake)
 ```
 
 ### NFRL Core
-In a Powershell terminal, navigate to the `NFRL/build` directory.  See also `build_commands.txt` for additional info.
+In a Powershell terminal, navigate to the `NFRL/build` directory.  See also `.\doc\build\build_commands.txt` for additional info.
 Run as follows:
 
 ```

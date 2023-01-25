@@ -61,8 +61,8 @@ class Registrator
 {
 private:
 
-  /** @brief Declare the pointer used for "new" operator, and "delete". */
-  NFRL::Registrator *_r2;
+  /** @brief Declare the pointer to NFRL core. */
+  std::unique_ptr<NFRL::Registrator> _r2;
 
   /** @brief Byte-stream of the Moving image. */
   cv::Mat _imgMovingMat;
@@ -78,13 +78,10 @@ public:
   // Default constructor.
   Registrator();
 
-  // Copy constructor.
-  Registrator( const Registrator& );
-
   /** @brief Full constructor used by NFRL with OpenCV API. */
   Registrator( cv::Mat &, cv::Mat &,
                std::vector<int> &, std::vector<std::string> & );
-  virtual ~Registrator() { delete _r2; }
+  virtual ~Registrator() {}   // smart-pointer precludes delete _r2; call
 
   void performRegistration();
 

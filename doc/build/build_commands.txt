@@ -4,7 +4,7 @@ Build output may be redirected to any convenient dir by utilizing the '-B' switc
 For the Windows examples below, build output is redirected to RAMDRIVE (R:\).  A nice tool to create RAMDRIVE for
 Windows is OFSMount (osforensics.com).
 
-From this 'build' subdir, open PowerShell terminal:
+From the './build' subdir, open PowerShell terminal:
 
 NFRL core:
 cmake -S .. -B R:\NFRL_core -DCMAKE_CONFIGURATION_TYPES="Release"
@@ -20,7 +20,7 @@ Library files are located here on successful build:
 
 
 ## Linux
-In a terminal, navigate to this 'build' subdir:
+In a terminal, navigate to the './build' subdir:
 
 NFRL core:
 cmake ..
