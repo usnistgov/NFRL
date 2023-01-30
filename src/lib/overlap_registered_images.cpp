@@ -31,6 +31,8 @@ identified are necessarily the best available for the purpose.
 
 namespace NFRL {
 
+#define ROI_THRESH 1000
+
 /** Initialization function that resets all values. */
 void OverlapRegisteredImages::Init() {
   _dilationKernelParams.size = -1;
@@ -109,10 +111,10 @@ OverlapRegisteredImages::OverlapRegisteredImages( cv::Mat img1, cv::Mat img2 )
     cv::Mat nonZeroPoints;
     cv::findNonZero( sumBinariesDilate, nonZeroPoints );
     _minRect = cv::boundingRect( nonZeroPoints );
-    // if( isRegionOfInterestEmpty() )
-    // {
-    //   throw NFRL::Miscue( "Registered images overlap region is empty." );
-    // }
+    if( isRegionOfInterestEmpty() )
+    {
+      throw NFRL::Miscue( "Registered images overlap region is empty." );
+    }
     if( isRegionOfInterestBelowThresh() )
     {
       // throw NFRL::Miscue( NFRL::ERR02 );
@@ -155,7 +157,7 @@ std::vector<std::string> OverlapRegisteredImages::getRegionOfInterestCorners() c
 bool OverlapRegisteredImages::isRegionOfInterestBelowThresh()
 {
   int area{_minRect.area()};
-  if( area < 100 )
+  if( area < ROI_THRESH )
     return true;
   else
     return false;

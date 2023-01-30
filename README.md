@@ -114,6 +114,8 @@ The *summed* image is used to calculate the ROI crop area rectangle.
 
 The final, cropped, registered images may be saved to disk (via function call).
 
+If the area of overlap (that is the crop-region) does not meet a minimum threshold, NFRL will throw an exception.
+
 ## Registration Metadata
 During the registration process, **NFRL** captures relevant data for further analysis, for example, translation and
 rotation matrices, padded image size, point-selection coordinates, rotation angle, resultant-registration

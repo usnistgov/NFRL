@@ -568,7 +568,15 @@ void Registrator::getMetadata( Registrator::RegistrationMetadata &m ) const
  * @throw NFRL::Miscue image control-points identical
  * @throw NFRL::Miscue corresponding points (vector) count not-equal to 8
  * @throw NFRL::Miscue OpenCV cannot decode image
+ * @throw NFRL::Miscue OpenCV cannot pad image
  * @throw NFRL::Miscue padded images not same size
+ * @throw NFRL::Miscue OpenCV cannot colorize padded, fixed image
+ * @throw NFRL::Miscue OpenCV cannot perform translation
+ * @throw NFRL::Miscue OpenCV cannot perform rotation
+ * @throw NFRL::Miscue OpenCV cannot colorize padded-translated-rotated image
+ * @throw NFRL::Miscue OpenCV cannot merge overlaid images
+ * @throw NFRL::Miscue Registered images overlap region is empty
+ * @throw NFRL::Miscue Registered images overlap region does not meet area threshold
  */
 void Registrator::performRegistration()
 {
