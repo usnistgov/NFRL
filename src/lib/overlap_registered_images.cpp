@@ -109,6 +109,16 @@ OverlapRegisteredImages::OverlapRegisteredImages( cv::Mat img1, cv::Mat img2 )
     cv::Mat nonZeroPoints;
     cv::findNonZero( sumBinariesDilate, nonZeroPoints );
     _minRect = cv::boundingRect( nonZeroPoints );
+    // if( isRegionOfInterestEmpty() )
+    // {
+    //   throw NFRL::Miscue( "Registered images overlap region is empty." );
+    // }
+    if( isRegionOfInterestBelowThresh() )
+    {
+      // throw NFRL::Miscue( NFRL::ERR02 );
+      throw NFRL::Miscue( "Registered images overlap region does not meet area threshold." );
+    }
+
   }
   catch( const cv::Exception& ex ) {
     std::string err{"OverlapRegisteredImages, cannot calc image-crop ROI: "};
@@ -141,6 +151,21 @@ std::vector<std::string> OverlapRegisteredImages::getRegionOfInterestCorners() c
   return pts;
 }
 
+/** @brief Check status of ROI. */
+bool OverlapRegisteredImages::isRegionOfInterestBelowThresh()
+{
+  int area{_minRect.area()};
+  if( area < 100 )
+    return true;
+  else
+    return false;
+}
+
+/** @brief Check status of ROI. */
+bool OverlapRegisteredImages::isRegionOfInterestEmpty()
+{
+  return _minRect.empty();
+}
 
 /**
  * @brief The structuring element (kernel) that was used to dilate the

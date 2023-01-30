@@ -73,6 +73,10 @@ private:
   /** @brief Container for size and type of the dilation kernel. */
   _dilationKernelParams;
 
+  /** @brief Ensure that the ROI is valid. */
+  bool isRegionOfInterestEmpty();
+  bool isRegionOfInterestBelowThresh();
+
 public:
 
   void Init();
@@ -90,11 +94,11 @@ public:
 
   /** @brief Rectangle of overlap for cropping of source images. */
   cv::Rect getRegionOfInterest() const;
-  /** @brief Image used to calculate the common, ROI crop coordinates. */
-  std::vector<uint8_t> getPngBlob() const;
-
   /** @brief Top-left and bottom-right. */
   std::vector<std::string> getRegionOfInterestCorners() const;
+
+  /** @brief Image used to calculate the common, ROI crop coordinates. */
+  std::vector<uint8_t> getPngBlob() const;
 
   // Debug metadata
   std::string getStructuringElementParams();
