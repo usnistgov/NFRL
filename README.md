@@ -114,7 +114,8 @@ The *summed* image is used to calculate the ROI crop area rectangle.
 
 The final, cropped, registered images may be saved to disk (via function call).
 
-If the area of overlap (that is the crop-region) does not meet a minimum threshold, NFRL will throw an exception.
+If the area of overlap (that is the crop-region) does not meet a minimum width or height threshold, NFRL will throw
+an exception.
 
 ## Registration Metadata
 During the registration process, **NFRL** captures relevant data for further analysis, for example, translation and
@@ -122,6 +123,36 @@ rotation matrices, padded image size, point-selection coordinates, rotation angl
 control-points-pairs distances, and scale factor.  This metadata is available through function calls to retrieve the
 metadata in plain-text and XML format.  The XML "Russian doll" schema is located in the `./doc` subdir.
 
+## Thrown Exceptions
+### Registrator Constructor
+* throw NFRL::Miscue( "moving img buffer is empty" );
+* throw NFRL::Miscue( "fixed img buffer is empty" );
+
+### performRegistration() Function Call
+* throw NFRL::Miscue( "Corresponding points count == {X}, should be 8" );
+* throw NFRL::Miscue( "Moving image control-points identical, cannot continue" );
+* throw NFRL::Miscue( "Fixed image control-points identical, cannot continue" );
+* throw NFRL::Miscue( "OpenCV cannot decode image:" );
+* throw NFRL::Miscue( "OpenCV cannot pad image:" );
+* throw NFRL::Miscue( "Padded images not same size" );
+* throw NFRL::Miscue( "OpenCV cannot colorize padded, fixed image:" );
+* throw NFRL::Miscue( "OpenCV cannot perform translation:" );
+* throw NFRL::Miscue( "OpenCV cannot perform rotation:" );
+* throw NFRL::Miscue( "OpenCV cannot colorize padded-translated-rotated image:" );
+* throw NFRL::Miscue( "OpenCV cannot merge overlaid images:" );
+* throw NFRL::Miscue( "OpenCV cannot crop or save final images:" );
+
+### saveCroppedRegisteredImageToDisk() Function Call
+* throw NFRL::Miscue( "OpenCV cannot save image: '{path}'" );
+
+### saveCroppedFixedImageToDisk() Function Call
+* throw NFRL::Miscue( "OpenCV cannot save image: '{path}'" );
+
+### OverlapRegisteredImages Constructor
+* throw NFRL::Miscue( "OverlapRegisteredImages, cannot calc image-crop ROI:" );
+* throw NFRL::Miscue( "Registered images overlap region is empty." );
+* throw NFRL::Miscue( "Registered images overlap region does not meet width threshold=" );
+* throw NFRL::Miscue( "Registered images overlap region does not meet height threshold=" );
 
 # Dependencies
 **NFRL** was tested with OpenCV 3.4.11 and 4.5.0.  It is recommended that the latest version of OpenCV be used.

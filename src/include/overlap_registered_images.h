@@ -75,7 +75,7 @@ private:
 
   /** @brief Ensure that the ROI is valid. */
   bool isRegionOfInterestEmpty();
-  bool isRegionOfInterestBelowThresh();
+  bool isRegionOfInterestBelowThresh( std::string & );
 
 public:
 

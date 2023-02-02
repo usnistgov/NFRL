@@ -576,7 +576,8 @@ void Registrator::getMetadata( Registrator::RegistrationMetadata &m ) const
  * @throw NFRL::Miscue OpenCV cannot colorize padded-translated-rotated image
  * @throw NFRL::Miscue OpenCV cannot merge overlaid images
  * @throw NFRL::Miscue Registered images overlap region is empty
- * @throw NFRL::Miscue Registered images overlap region does not meet area threshold
+ * @throw NFRL::Miscue Registered images overlap region does not meet width threshold
+ * @throw NFRL::Miscue Registered images overlap region does not meet height threshold
  */
 void Registrator::performRegistration()
 {

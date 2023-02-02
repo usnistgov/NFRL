@@ -31,7 +31,7 @@ identified are necessarily the best available for the purpose.
 
 namespace NFRL {
 
-#define ROI_THRESH 1000
+#define ROI_THRESH 12   // minimum width and height thresholds
 
 /** Initialization function that resets all values. */
 void OverlapRegisteredImages::Init() {
@@ -115,10 +115,10 @@ OverlapRegisteredImages::OverlapRegisteredImages( cv::Mat img1, cv::Mat img2 )
     {
       throw NFRL::Miscue( "Registered images overlap region is empty." );
     }
-    if( isRegionOfInterestBelowThresh() )
+    std::string errMsg;
+    if( isRegionOfInterestBelowThresh( errMsg ) )
     {
-      // throw NFRL::Miscue( NFRL::ERR02 );
-      throw NFRL::Miscue( "Registered images overlap region does not meet area threshold." );
+      throw NFRL::Miscue( errMsg );
     }
 
   }
@@ -154,11 +154,20 @@ std::vector<std::string> OverlapRegisteredImages::getRegionOfInterestCorners() c
 }
 
 /** @brief Check status of ROI. */
-bool OverlapRegisteredImages::isRegionOfInterestBelowThresh()
+bool OverlapRegisteredImages::isRegionOfInterestBelowThresh( std::string &errMsg )
 {
-  int area{_minRect.area()};
-  if( area < ROI_THRESH )
+  int width = _minRect.width;
+  int height = _minRect.height;
+  if( width < ROI_THRESH ) {
+    errMsg = "Registered images overlap region does not meet width threshold="
+      + std::to_string(ROI_THRESH) + ", is " + std::to_string(width) + ".";
     return true;
+  }
+  else if( height < ROI_THRESH ) {
+    errMsg = "Registered images overlap region does not meet height threshold="
+      + std::to_string(ROI_THRESH) + ", is " + std::to_string(height) + ".";
+    return true;
+  }
   else
     return false;
 }
