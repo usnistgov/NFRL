@@ -90,19 +90,23 @@ PointsOnImage::PointsOnImage( cv::Point2f pointOne, cv::Point2f pointTwo )
   double pi = 2 * acos(0.0);
   _pointOne = pointOne;
   _pointTwo = pointTwo;
+  _slope = 0;   // initalize in case slope is not calculated
 
   _sideX = _pointTwo.x - _pointOne.x;
   _sideY = _pointTwo.y - _pointOne.y;
   segmentLength = sqrt( std::pow(_sideX, 2) + std::pow(_sideY, 2) ) ;
 
-  if(( _sideX == 0) && (pointTwo.y > pointOne.y)) {  // vertical ray down
-    angleDegrees = 90.0;
-  }
-  else if(( _sideX == 0) && (pointTwo.y <= pointOne.y)) {   // vertical ray up
+  int sX{static_cast<int>( _sideX )};
+
+  if(( sX == 0) && (pointTwo.y > pointOne.y)) {  // vertical ray down
     angleDegrees = -90.0;
+  }
+  else if(( sX == 0) && (pointTwo.y <= pointOne.y)) {   // vertical ray up
+    angleDegrees = 90.0;
   }
   else {
     _slope = _sideY / _sideX;
+    _slope = -_slope;    // image origin is located at top-left
     angleDegrees = std::acos( _sideX / segmentLength ) * 180.0 / pi;
 
     if( ( _sideX > 0.0 ) && ( _slope < 0 ) ) {   // classic Cartesian quad IV
